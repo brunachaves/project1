@@ -3,7 +3,6 @@
 # Começando com os imports
 import csv
 import matplotlib.pyplot as plt
-import statistics 
 
 
 # Vamos ler os dados como uma lista
@@ -94,8 +93,12 @@ def count_word(list_column, word):
     list_column: defined by the list your willing to analyze
     word: is the word that is willing to be counted
     """
+    counter = 0
 
-    return list_column.count(word)
+    for i in range(0,len(list_column)):
+        if list_column[i] == word:
+            counter +=1
+    return counter
 
 gender = column_to_list(data_list, -2)
 
@@ -125,7 +128,7 @@ def count_gender(data_list):
     This function counts how many strings "Female" and "Male" exist in the data set 
 
     Keyword arguments:
-    data_list: is the data base list to be analyzed
+    data_list: is the database list to be analyzed
     """
     gender = column_to_list(data_list, -2)
     male = count_word(gender, "Male")
@@ -148,9 +151,18 @@ input("Aperte Enter para continuar...")
 # TAREFA 6
 # Esperamos ver "Male", "Female", ou "Equal" como resposta.
 def most_popular_gender(data_list):
-    if male > female:   
+    """
+    This function returns the most popular gender in a data_list
+    where its first element is the number of Males and second element
+    is the number of Females.
+
+    Keyword arguments:
+    data_list: is the data base list to be analyzed, in this format [Males,Females]
+    """
+    male_female_list = count_gender(data_list)
+    if male_female_list[0] > male_female_list[1]:   
         answer = "Male"
-    elif female > male:
+    elif male_female_list[1] > male_female_list[0]:
         answer = "Female"
     else:
         answer = "Equal"
@@ -180,6 +192,12 @@ plt.show(block=True)
 input("Aperte Enter para continuar...")
 # TAREFA 7
 def count_usertype(data_list):
+    """ 
+    This function counts how many strings "Customer" and "Subscriber" exists in the data set 
+
+    Keyword arguments:
+    data_list: is the database list to be analyzed
+    """
     subscriber = count_word(user_types, "Subscriber")
     customer = count_word(user_types, "Customer")
     return [customer, subscriber]
@@ -216,11 +234,30 @@ input("Aperte Enter para continuar...")
 # TODO: Ache a duração de viagem Mínima, Máxima, Média, e Mediana.
 # Você não deve usar funções prontas para isso, como max() e min().
 trip_duration_list = list(map(int, column_to_list(data_list, 2)))
-min_trip = min(trip_duration_list)
-max_trip = max(trip_duration_list)
+
+min_trip = trip_duration_list[0]
+max_trip = trip_duration_list[0]
+
+for i in range(0,len(trip_duration_list)):
+    if min_trip > trip_duration_list[i]:
+        min_trip = trip_duration_list[i]
+
+for i in range(0,len(trip_duration_list)):
+    if max_trip < trip_duration_list[i]:
+        max_trip = trip_duration_list[i]
+
+size = len(trip_duration_list)
+trip_duration_list.sort()
+
+if size//2 == 0:
+    size = size/2
+    median_trip = trip_duration_list[size]+trip_duration_list[size+1]
+elif size//2 != 0:
+    median_trip = trip_duration_list[int((size+1)/2)]
+
+
 mean_trip = sum(trip_duration_list) / float(len(trip_duration_list))
-from statistics import median
-median_trip = median(trip_duration_list)
+
 
 print("\nTAREFA 9: Imprimindo o mínimo, máximo, média, e mediana")
 print("Min: ", min_trip, "Max: ", max_trip, "Média: ", mean_trip, "Mediana: ", median_trip)
@@ -261,8 +298,20 @@ print("Você vai encarar o desafio? (yes ou no)")
 answer = "no"
 
 def count_items(column_list):
-    item_types = []
+    """ This function creates a dataset with the types of strings in a database.
+    Then it counts the frequency of each type.
+    It returns the types and the frequency in the format: types,counts
+
+    Keyword Arguments:
+    column_list: a list with data from a column from data_list
+    """
+    item_types = column_list.set()
     count_items = []
+    for i in range(0,len(item_types)):
+        for j in range(0,len(column_list)):
+            if column_list[j] == item_types[i]:
+                count_items[i] += 1
+    
     return item_types, count_items
 
 
